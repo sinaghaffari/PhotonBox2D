@@ -2,7 +2,7 @@ package main;
 
 import entities.Line;
 import entities.light_sources.OmnidirectionalLightSource;
-import s2d.Display.Display;
+import s2d.display.Display;
 import s2d.math.Vec;
 import util.Color;
 
