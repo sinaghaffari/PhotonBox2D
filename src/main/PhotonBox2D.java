@@ -60,7 +60,7 @@ public class PhotonBox2D {
                     outputFile.getParentFile().mkdirs();
                     BufferedImage bi = new BufferedImage( world.getWidth(), world.getHeight(), BufferedImage.TYPE_INT_ARGB );
                     Graphics2D bg = (Graphics2D) bi.getGraphics();
-                    bg.setPaint( java.awt.Color.white );
+                    bg.setPaint( java.awt.Color.black );
                     bg.fillRect( 0, 0, Display.getWidth(), Display.getHeight() );
                     world.render( bg );
                     bg.dispose();
@@ -71,10 +71,10 @@ public class PhotonBox2D {
                     }
                 }
                 world.setExposure( world.getExposure() + Mouse.getDWheel() );
-                g2.setPaint( java.awt.Color.white );
+                g2.setPaint( java.awt.Color.black );
                 g2.fillRect( 0, 0, Display.getWidth(), Display.getHeight() );
                 world.render( g2 );
-                Display.setTitle( "#Photons: " + world.getGlobalRayCount() + " Photons/s: " + photonsPerSecond );
+                Display.setTitle( "#Photons: " + world.getGlobalRayCount() + " Photons/s: " + photonsPerSecond + " Press Space to take a screenshot!" );
                 Display.swapBuffers();
 
             }
