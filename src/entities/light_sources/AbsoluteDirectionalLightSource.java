@@ -11,8 +11,8 @@ import util.Color;
  * @author Sina Ghaffari
  */
 public class AbsoluteDirectionalLightSource extends DirectionalLightSource {
-    public AbsoluteDirectionalLightSource( Vec position, Color color, PhotonWorld world ) {
-        super( position, color, world );
+    public AbsoluteDirectionalLightSource( Vec position, Color color, PhotonWorld world, double direction ) {
+        super( position, color, world, direction );
     }
 
     @Override

@@ -31,11 +31,11 @@ import java.util.ArrayList;
  */
 public class Path {
     /**
-     * An {@link ArrayList} of ordered {@link Block}s from target to source.
+     * An {@link java.util.ArrayList} of ordered {@link Block}s from target to source.
      */
     public ArrayList<Block> pl = new ArrayList<Block>();
     /**
-     * A {@link GeneralPath} tracing the path from target to source.
+     * A {@link java.awt.geom.GeneralPath} tracing the path from target to source.
      */
     public GeneralPath gp = new GeneralPath();
     private Map map;

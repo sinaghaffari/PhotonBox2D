@@ -97,7 +97,7 @@ public class Mouse {
      * Sets mouse events to be polled. Should be called from every java mouse
      * method.
      *
-     * @param e The {@link MouseEvent} that should be used to poll.
+     * @param e The {@link java.awt.event.MouseEvent} that should be used to poll.
      */
     public static void setMouse( MouseEvent e ) {
         int b = e.getButton();
@@ -117,7 +117,7 @@ public class Mouse {
      * Sets mouse wheel events to be polled. Should be called from every java mouse wheel
      * method.
      *
-     * @param e The {@link MouseWheelEvent} that should be used to poll.
+     * @param e The {@link java.awt.event.MouseWheelEvent} that should be used to poll.
      */
     public static void setMouse( MouseWheelEvent e ) {
         Mouse.tempDeltaMouseWheel += e.getPreciseWheelRotation();
@@ -183,14 +183,14 @@ public class Mouse {
     }
 
     /**
-     * Applies an {@link AffineTransform} to the X coordinate of the mouse. <br>
+     * Applies an {@link java.awt.geom.AffineTransform} to the X coordinate of the mouse. <br>
      * This is useful when are scaling and translating a graphics object but want the mouse input to stay accurate. <br>
      * <b> Note:</b> This does NOT permanently change the mouse coordinate.
      *
-     * @param af The {@link AffineTransform} that will be applied.
+     * @param af The {@link java.awt.geom.AffineTransform} that will be applied.
      * @return The translated Mouse coordinate as a double.
-     * @throws NoninvertibleTransformException
-     * @see AffineTransform
+     * @throws java.awt.geom.NoninvertibleTransformException
+     * @see java.awt.geom.AffineTransform
      */
     public static double getX( AffineTransform af ) throws NoninvertibleTransformException {
         Point2D trans = new Point2D.Double();
@@ -229,14 +229,14 @@ public class Mouse {
     }
 
     /**
-     * Applies an {@link AffineTransform} to the Y coordinate of the mouse. <br>
+     * Applies an {@link java.awt.geom.AffineTransform} to the Y coordinate of the mouse. <br>
      * This is useful when are scaling and translating a graphics object but want the mouse input to stay accurate. <br>
      * <b> Note:</b> This does NOT permanently change the mouse coordinate.
      *
-     * @param transformation The {@link AffineTransform} that will be applied.
+     * @param transformation The {@link java.awt.geom.AffineTransform} that will be applied.
      * @return The translated Mouse coordinate as a double.
-     * @throws NoninvertibleTransformException
-     * @see AffineTransform
+     * @throws java.awt.geom.NoninvertibleTransformException
+     * @see java.awt.geom.AffineTransform
      */
     public static double getY( AffineTransform transformation ) throws NoninvertibleTransformException {
         Point2D trans = new Point2D.Double();

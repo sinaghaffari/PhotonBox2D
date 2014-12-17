@@ -81,8 +81,8 @@ public class Keyboard {
      * updated. Note: This is handled automatically by the {@link Display}
      * class.
      *
-     * @param i The {@link KeyEvent} of the key that should be added.
-     * @see KeyEvent
+     * @param i The {@link java.awt.event.KeyEvent} of the key that should be added.
+     * @see java.awt.event.KeyEvent
      * @see Display
      */
     public static void addKey( int i ) {
@@ -94,8 +94,8 @@ public class Keyboard {
      * a key is released. Note: This is handled automatically by the
      * {@link Display} class.
      *
-     * @param i The {@link KeyEvent} of the key that should be added.
-     * @see KeyEvent
+     * @param i The {@link java.awt.event.KeyEvent} of the key that should be added.
+     * @see java.awt.event.KeyEvent
      * @see Display
      */
     public static void removeKey( int i ) {
@@ -107,7 +107,7 @@ public class Keyboard {
      * Determines whether or not a key is being held down or not from the
      * current poll.
      *
-     * @param i The {@link KeyEvent} of the key that should be checked.
+     * @param i The {@link java.awt.event.KeyEvent} of the key that should be checked.
      * @return True when the key is being pressed down.
      */
     public static boolean isKeyDown( int i ) {
@@ -120,7 +120,7 @@ public class Keyboard {
      * task upon a key press without repeating it every time the Keyboard is
      * updated. This will only return true once pressing and releasing a key.
      *
-     * @param i The {@link KeyEvent} of the key that should be checked.
+     * @param i The {@link java.awt.event.KeyEvent} of the key that should be checked.
      * @return True when the key is first pressed.
      */
     public static boolean isKeyTyped( int i ) {
@@ -133,7 +133,7 @@ public class Keyboard {
      * task upon a key press without repeating it every time the Keyboard is
      * updated.
      *
-     * @param i The {@link KeyEvent} of the key that should be checked.
+     * @param i The {@link java.awt.event.KeyEvent} of the key that should be checked.
      * @return True when the key is first released.
      */
     public static boolean isKeyReleased( int i ) {
@@ -141,21 +141,21 @@ public class Keyboard {
     }
 
     /**
-     * @return an {@link ArrayList} containing every key that is currently pressed.
+     * @return an {@link java.util.ArrayList} containing every key that is currently pressed.
      */
     public static ArrayList<Integer> getAllKeysDown() {
         return new ArrayList<Integer>( keyPressed );
     }
 
     /**
-     * @return an {@link ArrayList} containing every key has just been released.
+     * @return an {@link java.util.ArrayList} containing every key has just been released.
      */
     public static ArrayList<Integer> getAllKeysReleased() {
         return new ArrayList<Integer>( keyReleased );
     }
 
     /**
-     * @return an {@link ArrayList} containing every key has just been pressed.
+     * @return an {@link java.util.ArrayList} containing every key has just been pressed.
      */
     public static ArrayList<Integer> getAllKeysTyped() {
         return new ArrayList<Integer>( keyTyped );

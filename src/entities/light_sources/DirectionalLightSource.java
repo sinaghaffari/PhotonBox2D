@@ -11,9 +11,22 @@ import util.Color;
  * @author Sina Ghaffari
  */
 public abstract class DirectionalLightSource extends LightSource {
-    public DirectionalLightSource( Vec position, Color color, PhotonWorld world ) {
+    protected double direction;
+
+    public DirectionalLightSource( Vec position, Color color, PhotonWorld world, double direction ) {
         super( position, color, world );
+        this.direction = direction;
     }
 
-    public abstract void tick( long rays );
+    public void tick( long rays ) {
+        super.tick( rays );
+    }
+
+    public double getDirection() {
+        return direction;
+    }
+
+    public void setDirection( double direction ) {
+        this.direction = direction;
+    }
 }

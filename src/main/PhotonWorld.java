@@ -12,6 +12,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by Sina Ghaffari (sina.ghaffari321@gmail.com) on 10/12/14.
@@ -19,40 +23,70 @@ import java.util.Random;
  * @author Sina Ghaffari
  */
 public class PhotonWorld {
-    public static final Random RAND = new S2DRandom( new Random().nextLong() );
+    private static int CPU_CORES = Runtime.getRuntime().availableProcessors();
+    public static final Random[] RAND = new S2DRandom[CPU_CORES];
     private final byte COLOR_DEPTH = 4;
+    long startTime = 0;
+    double tickRate = 60;
+    ExecutorService es = Executors.newFixedThreadPool( CPU_CORES );
+    ConstantPhotonEmitter[] constantPhotonEmitter = new ConstantPhotonEmitter[CPU_CORES];
     private int width, height;
     private ArrayList<Line> lineList = new ArrayList<Line>();
     private ArrayList<LightSource> lightSources = new ArrayList<LightSource>();
     private BufferedImage worldImage;
     private double[] rawPixelInfo;
+    private int[] convertedPixels;
     private long globalRayCount = 0;
     private double exposure = 500;
+    private ArrayList<Callable<Integer>> photonEmitters = new ArrayList<Callable<Integer>>();
+    private ArrayList<Callable<Integer>> renderers = new ArrayList<Callable<Integer>>();
 
     public PhotonWorld( int width, int height ) {
         this.width = width;
         this.height = height;
         worldImage = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB );
         rawPixelInfo = new double[width * height * COLOR_DEPTH];
+        convertedPixels = new int[width * height * COLOR_DEPTH];
         lineList.add( new Line( Vec.createVectorAlgebraically( 0, 0 ), Vec.createVectorAlgebraically( width, 0 ), 0, 0, 0 ) );
         lineList.add( new Line( Vec.createVectorAlgebraically( width, 0 ), Vec.createVectorAlgebraically( width, height ), 0, 0, 0 ) );
         lineList.add( new Line( Vec.createVectorAlgebraically( width, height ), Vec.createVectorAlgebraically( 0, height ), 0, 0, 0 ) );
         lineList.add( new Line( Vec.createVectorAlgebraically( 0, height ), Vec.createVectorAlgebraically( 0, 0 ), 0, 0, 0 ) );
+
+        for ( int p = 0; p < CPU_CORES; p++ ) {
+            constantPhotonEmitter[p] = new ConstantPhotonEmitter( this );
+            constantPhotonEmitter[p].start();
+            //photonEmitters.add( new PhotonEmitter( this ) );
+            renderers.add( new Renderer( this, p * (width * height * COLOR_DEPTH / CPU_CORES) ) );
+        }
+
+    }
+
+    public static int getCpuCores() {
+        return CPU_CORES;
+    }
+
+    public void clearPhotons() {
+        globalRayCount = 0;
+        rawPixelInfo = new double[width * height * COLOR_DEPTH];
     }
 
     public void addLightSource( LightSource light ) {
+        pauseEmitters();
+        clearPhotons();
         lightSources.add( light );
+        resumeEmitters();
     }
 
     public void addLine( Line line ) {
+        pauseEmitters();
+        clearPhotons();
         lineList.add( line );
+        resumeEmitters();
     }
 
-    public void smartTick( long time ) {
-        long startTime = System.nanoTime();
-        while ( System.nanoTime() - startTime < time ) {
-            tick( 1 );
-        }
+    public void smartTick( long time ) throws InterruptedException {
+        this.tickRate = time;
+        startTime = System.nanoTime();
     }
 
     // ticks each LightSource that many times
@@ -63,22 +97,21 @@ public class PhotonWorld {
         }
     }
 
-    public void render( Graphics2D g ) {
-        int[] convertedPixels = new int[width * height * COLOR_DEPTH];
-        //Arrays.fill( convertedPixels, 255 );
-        for ( int i = 0; i < rawPixelInfo.length; i += COLOR_DEPTH ) {
-            double[] comp = new double[COLOR_DEPTH];
-            for ( int l = 0; l < COLOR_DEPTH; l++ ) {
-                comp[l] = rawPixelInfo[i + l] / globalRayCount * exposure * lightSources.size();
-                if ( comp[l] > 1 ) comp[l] = 1;
-                else if ( comp[l] < 0 ) comp[l] = 0;
-            }
-            double convertedComp[] = smartScreen( comp );
-            convertedPixels[i + 0] = (int) (255 * convertedComp[0]);
-            convertedPixels[i + 1] = (int) (255 * convertedComp[1]);
-            convertedPixels[i + 2] = (int) (255 * convertedComp[2]);
-            convertedPixels[i + 3] = (int) (255 * convertedComp[3]);
+    public void pauseEmitters() {
+        for ( int p = 0; p < CPU_CORES; p++ ) {
+            constantPhotonEmitter[p].pauseEmitter();
         }
+    }
+
+    public void resumeEmitters() {
+        for ( int p = 0; p < CPU_CORES; p++ ) {
+            constantPhotonEmitter[p].resumeEmitter();
+        }
+    }
+
+    public void render( Graphics2D g ) throws InterruptedException {
+        convertedPixels = new int[width * height * COLOR_DEPTH];
+        es.invokeAll( renderers );
         WritableRaster imageRaster = worldImage.getRaster();
         imageRaster.setPixels( 0, 0, width, height, convertedPixels );
         Graphics2D g2 = (Graphics2D) g.create();
@@ -93,31 +126,15 @@ public class PhotonWorld {
         return new double[]{ src[0] / alpha, src[1] / alpha, src[2] / alpha, alpha };
     }
 
-    public int screen( double src, double dst ) {
-        return (int) (255 * (1 - (1 - dst) * (1 - src)));
-    }
-
-    public int normal( double src, double dst ) {
-        return (int) (255 * src);
-    }
-
-    public int overlay( double src, double dst ) {
-        return (int) (255 * ((dst < 0.5) ? (2 * dst * src) : (1 - 2 * (1 - dst) * (1 - src))));
-    }
-
-    public int alpha( double src, double dst, double src_a ) {
-        return (int) (255 * src * src_a + dst * (1 - src_a));
-    }
-
     public void resolveRay( Vec startPoint, Vec direction, Color color ) {
         Line prevLineIntersection = null;
         double xi = startPoint.getX();
         double yi = startPoint.getY();
-        int interactionType = 0;
-        double ra = 0;
+        int interactionType = -1;
+        double ra = direction.getAngle();
         do {
             if ( interactionType == 0 ) {
-                ra = 2 * Math.PI * RAND.nextDouble();
+                ra = 2 * Math.PI * ThreadLocalRandom.current().nextDouble();
             } else if ( interactionType == 1 ) {
                 Vec normal = prevLineIntersection.getNormal();
                 Vec rVec = Vec.createVectorGeometrically( ra, 1 );
@@ -162,7 +179,7 @@ public class PhotonWorld {
             addRay( xi, yi, xf, yf, color );
             xi = xf;
             yi = yf;
-            double random = RAND.nextDouble();
+            double random = ThreadLocalRandom.current().nextDouble();
             if ( random < closestLine.getDiffuse() ) {
                 interactionType = 0;
             } else {
@@ -263,5 +280,133 @@ public class PhotonWorld {
 
     public long getGlobalRayCount() {
         return globalRayCount;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public byte getCOLOR_DEPTH() {
+        return COLOR_DEPTH;
+    }
+
+    public double getExposure() {
+        return exposure;
+    }
+
+    public void setExposure( double exposure ) {
+        this.exposure = exposure;
+        if ( this.exposure < 0 ) {
+            this.exposure = 0;
+        }
+    }
+
+    public double[] getRawPixelInfo() {
+        return rawPixelInfo;
+    }
+
+    public ArrayList<LightSource> getLightSources() {
+        return lightSources;
+    }
+
+    public ArrayList<Line> getLineList() {
+        return lineList;
+    }
+
+    public int[] getConvertedPixels() {
+        return convertedPixels;
+    }
+}
+
+class PhotonEmitter implements Callable<Integer> {
+    PhotonWorld world;
+
+    public PhotonEmitter( PhotonWorld world ) {
+        super();
+        this.world = world;
+    }
+
+    @Override
+    public Integer call() throws Exception {
+        while ( System.nanoTime() - world.startTime < 1000000000 / world.tickRate ) {
+            world.tick( 10 );
+        }
+        return 0;
+    }
+
+}
+
+class ConstantPhotonEmitter extends Thread {
+    private static int numEmitters = 0;
+    PhotonWorld world;
+    private volatile boolean emitting = true;
+    private volatile boolean busy = false;
+
+    public ConstantPhotonEmitter( PhotonWorld world ) {
+        super( "Emitter " + numEmitters );
+        numEmitters++;
+        this.world = world;
+    }
+
+    public void run() {
+        while ( true ) {
+
+            while ( !emitting ) {
+                try {
+                    Thread.sleep( 100 );
+                } catch ( InterruptedException e ) {
+                    e.printStackTrace();
+                }
+            }
+            busy = true;
+            world.tick( 1 );
+            busy = false;
+        }
+    }
+
+    public void pauseEmitter() {
+        emitting = false;
+        while ( busy )
+            continue;
+    }
+
+    public void resumeEmitter() {
+        emitting = true;
+        while ( !busy )
+            continue;
+    }
+}
+
+class Renderer implements Callable<Integer> {
+    PhotonWorld world;
+    int start, pixels;
+
+    public Renderer( PhotonWorld world, int start ) {
+        super();
+        this.start = start;
+        this.world = world;
+        this.pixels = world.getWidth() * world.getHeight() * world.getCOLOR_DEPTH() / PhotonWorld.getCpuCores();
+    }
+
+    @Override
+    public Integer call() throws Exception {
+        for ( int i = start; i < start + pixels; i += world.getCOLOR_DEPTH() ) {
+            double[] comp = new double[world.getCOLOR_DEPTH()];
+            for ( int l = 0; l < world.getCOLOR_DEPTH(); l++ ) {
+                comp[l] = world.getRawPixelInfo()[i + l] / world.getGlobalRayCount() * world.getExposure() * world.getLightSources().size();
+                if ( comp[l] > 1 ) comp[l] = 1;
+                else if ( comp[l] < 0 ) comp[l] = 0;
+            }
+            double convertedComp[] = world.smartScreen( comp );
+            world.getConvertedPixels()[i + 0] = (int) (255 * convertedComp[0]);
+            world.getConvertedPixels()[i + 1] = (int) (255 * convertedComp[1]);
+            world.getConvertedPixels()[i + 2] = (int) (255 * convertedComp[2]);
+            world.getConvertedPixels()[i + 3] = (int) (255 * convertedComp[3]);
+        }
+        return 0;
     }
 }

@@ -25,4 +25,20 @@ public abstract class LightSource {
     public void tick( long rays ) {
         rayCount += rays;
     }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor( Color color ) {
+        this.color = color;
+    }
+
+    public Vec getPosition() {
+        return position;
+    }
+
+    public void setPosition( Vec position ) {
+        this.position = position;
+    }
 }

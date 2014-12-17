@@ -35,71 +35,71 @@ import java.util.ArrayList;
  */
 public class ShapeData {
     /**
-     * An {@link ArrayList} containing {@link Ellipse2D}s.
+     * An {@link java.util.ArrayList} containing {@link java.awt.geom.Ellipse2D}s.
      */
     public ArrayList<Ellipse2D> ellipseList = new ArrayList<Ellipse2D>();
     /**
-     * An {@link ArrayList} containing {@link Rectangle2D}s.
+     * An {@link java.util.ArrayList} containing {@link java.awt.geom.Rectangle2D}s.
      */
     public ArrayList<Rectangle2D> rectangleList = new ArrayList<Rectangle2D>();
     /**
-     * An {@link ArrayList} containing {@link Line2D}s.
+     * An {@link java.util.ArrayList} containing {@link java.awt.geom.Line2D}s.
      */
     public ArrayList<Line2D> lineList = new ArrayList<Line2D>();
     /**
-     * An {@link ArrayList} containing {@link QuadCurve2D}s.
+     * An {@link java.util.ArrayList} containing {@link java.awt.geom.QuadCurve2D}s.
      */
     public ArrayList<QuadCurve2D> quadList = new ArrayList<QuadCurve2D>();
     /**
-     * An {@link ArrayList} containing {@link CubicCurve2D}s.
+     * An {@link java.util.ArrayList} containing {@link java.awt.geom.CubicCurve2D}s.
      */
     public ArrayList<CubicCurve2D> cubicList = new ArrayList<CubicCurve2D>();
     /**
-     * An {@link ArrayList} the properties of the  {@link CubicCurve2D}s.
+     * An {@link java.util.ArrayList} the properties of the  {@link java.awt.geom.CubicCurve2D}s.
      */
     public ArrayList<double[]> cubicListInfo = new ArrayList<double[]>();
 
     /**
-     * Adds an {@link Ellipse2D}
+     * Adds an {@link java.awt.geom.Ellipse2D}
      *
-     * @param s The {@link Ellipse2D} to be added.
+     * @param s The {@link java.awt.geom.Ellipse2D} to be added.
      */
     public void add( Ellipse2D s ) {
         ellipseList.add( s );
     }
 
     /**
-     * Adds a {@link Rectangle2D}
+     * Adds a {@link java.awt.geom.Rectangle2D}
      *
-     * @param s The {@link Rectangle2D} to be added.
+     * @param s The {@link java.awt.geom.Rectangle2D} to be added.
      */
     public void add( Rectangle2D s ) {
         rectangleList.add( s );
     }
 
     /**
-     * Adds a {@link Line2D}
+     * Adds a {@link java.awt.geom.Line2D}
      *
-     * @param s The {@link Line2D} to be added.
+     * @param s The {@link java.awt.geom.Line2D} to be added.
      */
     public void add( Line2D s ) {
         lineList.add( s );
     }
 
     /**
-     * Adds a {@link QuadCurve2D}
+     * Adds a {@link java.awt.geom.QuadCurve2D}
      *
-     * @param s The {@link QuadCurve2D} to be added.
+     * @param s The {@link java.awt.geom.QuadCurve2D} to be added.
      */
     public void add( QuadCurve2D s ) {
         quadList.add( s );
     }
 
     /**
-     * Adds a {@link CubicCurve2D}<br>
+     * Adds a {@link java.awt.geom.CubicCurve2D}<br>
      * <b> Note: </b> Problems exist, currently changes all cubic curves to line segments.
      *
-     * @param s The {@link CubicCurve2D} to be added.
+     * @param s The {@link java.awt.geom.CubicCurve2D} to be added.
      */
     public void add( CubicCurve2D s ) {
         /*
@@ -132,9 +132,9 @@ public class ShapeData {
     }
 
     /**
-     * Adds any other arbitrary shape and saves it as a combination of {@link Line2D}s, {@link QuadCurve2D}s, and {@link CubicCurve2D}s.
+     * Adds any other arbitrary shape and saves it as a combination of {@link java.awt.geom.Line2D}s, {@link java.awt.geom.QuadCurve2D}s, and {@link java.awt.geom.CubicCurve2D}s.
      *
-     * @param s The {@link Shape} to be added.
+     * @param s The {@link java.awt.Shape} to be added.
      */
     public void add( Shape s ) {
         PathIterator path = s.getPathIterator( null );

@@ -27,7 +27,7 @@ import java.awt.geom.*;
 import java.util.*;
 
 /**
- * A powerful and efficient ray tracer that can cast a ray to any {@link Shape}.
+ * A powerful and efficient ray tracer that can cast a ray to any {@link java.awt.Shape}.
  *
  * @author Sina Ghaffari
  * @version 1.0
@@ -43,7 +43,7 @@ public class RayCaster {
      * @param sd        A collection of shapes designed to separate shapes from one another and speed up raycasting.
      * @param start     A {@link Vec} representing the initial coordinates of the ray.
      * @param direction A {@link Vec} representing the direction of the ray.
-     * @return The closest point from <code>start</code> that the ray intersects the shapes stored in a {@link Point2D}.
+     * @return The closest point from <code>start</code> that the ray intersects the shapes stored in a {@link java.awt.geom.Point2D}.
      */
     public static Point2D castRayClosestPoint( ShapeData sd, Vec start, Vec direction ) {
         double sx = start.getX();
@@ -292,7 +292,7 @@ public class RayCaster {
      * @param start      A {@link Vec} representing the initial coordinates of the ray.
      * @param direction  A {@link Vec} representing the direction of the ray.
      * @param shouldSort A boolean stating whether or not the returned list should be sorted by distance.
-     * @return An {@link ArrayList} containing all the points at which the ray intersects the shape (sorted or not).
+     * @return An {@link java.util.ArrayList} containing all the points at which the ray intersects the shape (sorted or not).
      */
     public static ArrayList<Point2D.Double> castRayAllPoints( ShapeData sd, Vec start, Vec direction, boolean shouldSort ) {
         Set<Double> al;

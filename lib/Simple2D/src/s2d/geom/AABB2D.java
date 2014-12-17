@@ -57,7 +57,7 @@ public class AABB2D {
      * Returns the new position of a an AABB2D after having interacted with a list of other AABB2D.
      *
      * @param box       The moving AABB2D
-     * @param staticBox A {@link List} of all of the static walls that are to be collided with.
+     * @param staticBox A {@link java.util.List} of all of the static walls that are to be collided with.
      * @param velocity  The velocity of the moving box
      * @return the new position of the AABB2D (box).
      */
@@ -139,7 +139,7 @@ public class AABB2D {
     }
 
     /**
-     * @return The bounds of the box as a {@link Rectangle2D}
+     * @return The bounds of the box as a {@link java.awt.geom.Rectangle2D}
      */
     public Rectangle2D getBounds() {
         return bounds;

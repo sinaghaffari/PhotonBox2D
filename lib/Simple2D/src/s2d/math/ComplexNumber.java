@@ -57,7 +57,7 @@ public class ComplexNumber {
      * Adds two complex numbers together.
      *
      * @param n A real number to be added to the complex number.
-     * @return A {@link ComplexNumber} that is the sum of the two.
+     * @return A {@link s2d.math.ComplexNumber} that is the sum of the two.
      */
     public ComplexNumber add( ComplexNumber n ) {
         return new ComplexNumber( n.a + a, n.b + b );

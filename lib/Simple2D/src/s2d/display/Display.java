@@ -95,7 +95,7 @@ public class Display {
      * The graphics object that gets drawn to the front buffer. <br>
      * Use this for rendering.
      *
-     * @return The {@link Graphics2D} object used to render to the screen.
+     * @return The {@link java.awt.Graphics2D} object used to render to the screen.
      */
     public static Graphics2D getGraphics() {
         return (Graphics2D) g.create();
@@ -201,11 +201,20 @@ public class Display {
     }
 
     /**
+     * Sets the display as the active window and sends all input to it.
+     * <p/>
+     * Note: It is not recommended to call this method often as it will pull focus and disallow keyboard input to any other window.
+     */
+    public static void grabFocus() {
+        mainComponent.grabFocus();
+    }
+
+    /**
      * Update the window. Calls swapBuffers() and finally polls the input
      * devices.
      *
-     * @see Display#processDisplayEvents() pollInput()
-     * @see Display#swapBuffers() swapBuffers()
+     * @see s2d.display.Display#processDisplayEvents() pollInput()
+     * @see s2d.display.Display#swapBuffers() swapBuffers()
      */
     public static void update() {
         if ( isDisplayCreated ) {
@@ -251,7 +260,7 @@ public class Display {
      * so it is not necessary to call this method if update() is called
      * periodically.
      *
-     * @see Display#update() update()
+     * @see s2d.display.Display#update() update()
      */
     public static void processDisplayEvents() {
         if ( isDisplayCreated ) {
@@ -264,7 +273,7 @@ public class Display {
      * Swap the display buffers. This method is called from update(), so it is
      * not necessary to call this method if update() is called periodically.
      *
-     * @see Display#update() update()
+     * @see s2d.display.Display#update() update()
      */
     public static void swapBuffers() {
         if ( isDisplayCreated ) {
@@ -333,17 +342,8 @@ class InnerDisplay extends JComponent implements MouseListener,
         //this.setIgnoreRepaint(true);
     }
 
-    public void redraw() {
-        this.grabFocus();
-        Graphics2D g2 = (Graphics2D) this.getGraphics();
-        g2.drawImage( frontBuffer, 0, 0, null );
-
-        g2.dispose();
-    }
-
     @Override
     public void paintComponent( Graphics g ) {
-        this.grabFocus();
         Graphics2D g2 = (Graphics2D) g.create();
 
         g2.drawImage( frontBuffer, 0, 0, null );
@@ -464,7 +464,7 @@ class DisplayContainer extends JFrame implements WindowListener {
 
     @Override
     public void windowActivated( WindowEvent e ) {
-        // TODO Auto-generated method stub
+        Display.grabFocus();
 
     }
 

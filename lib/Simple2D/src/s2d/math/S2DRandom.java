@@ -23,13 +23,13 @@ import java.util.Random;
 /**
  * A psuedo-random number generator based on the XORShift
  * psuedo-random generator.
- * It is significantly faster than {@link Random}.
+ * It is significantly faster than {@link java.util.Random}.
  *
  * @author Sina Ghaffari
  * @version 1.0
  * @since 1.0
  */
-public class S2DRandom extends java.util.Random {
+public class S2DRandom extends Random {
     private long seed;
 
     public S2DRandom( long seed ) {
